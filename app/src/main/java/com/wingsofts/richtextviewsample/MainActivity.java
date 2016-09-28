@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     RichTextView richTextView = (RichTextView) findViewById(R.id.richTextView);
-    richTextView.setHtml(mTxt, 1000, 800);
+    richTextView.setHtml(mTxt, 500);
     richTextView.setOnImageClickListener(new RichTextView.ImageClickListener() {
       @Override public void onImageClick(String imageUrl, String[] imageUrls, int position) {
         Toast.makeText(MainActivity.this, "imageUrl :"

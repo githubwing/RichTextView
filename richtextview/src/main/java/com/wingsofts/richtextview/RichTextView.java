@@ -9,6 +9,7 @@ import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
@@ -48,17 +49,23 @@ public class RichTextView extends TextView {
     super.onSizeChanged(w, h, oldw, oldh);
     mWidth = w;
   }
-
   /**
    * 设置富文本
+   *
+   * @param height 图片的高度
    */
-  public void setHtml(String source, int width, int height) {
+  public void setHtml(final String source, final int height) {
+    getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override public void onGlobalLayout() {
+        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        stringBuilder = (SpannableStringBuilder) Html.fromHtml(source,
+            new GlideImageGetter(mContext, Glide.with(mContext), RichTextView.this, false,
+                ((View) getParent()).getWidth(), height), null);
 
-    stringBuilder = (SpannableStringBuilder) Html.fromHtml(source,
-        new GlideImageGetter(mContext, Glide.with(mContext), this, false, width, height), null);
-
-    setImageClickable(stringBuilder);
-    setText(stringBuilder);
+        setImageClickable(stringBuilder);
+        setText(stringBuilder);
+      }
+    });
   }
 
   public void setOnImageClickListener(ImageClickListener imageClickListener) {
